@@ -1,4 +1,4 @@
-package com.yiwang.javainterview.atguiguphase1;
+package com.yiwang.javainterview.atguiguphase1.c2;
 
 public class SingletonP2 {
     private static final SingletonP2 single = new SingletonP2();

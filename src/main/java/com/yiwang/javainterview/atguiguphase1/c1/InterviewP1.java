@@ -1,4 +1,4 @@
-package com.yiwang.javainterview.atguiguphase1;
+package com.yiwang.javainterview.atguiguphase1.c1;
 
 public class InterviewP1 {
     public static void main(String[] args) {
