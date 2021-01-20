@@ -57,10 +57,63 @@ public class FiltersJsonToSql {
                 "\t\t}]\n" +
                 "\t}]\n" +
                 "}";
+        String s4="{\n" +
+                "\t\"name\": \"gender\",\n" +
+                "\t\"value\": \"女\",\n" +
+                "\t\"operator\": \"=\",\n" +
+                "\t\"relationship\": \"\",\n" +
+                "\t\"childRelationship\": \"and\",\n" +
+                "\t\"childCohortFilters\": [{\n" +
+                "\t\t\"name\": \"clinical_stage\",\n" +
+                "\t\t\"value\": \"III\",\n" +
+                "\t\t\"operator\": \"=\",\n" +
+                "\t\t\"relationship\": \"\",\n" +
+                "\t\t\"childRelationship\": \"or\",\n" +
+                "\t\t\"childCohortFilters\": [{\n" +
+                "\t\t\t\"name\": \"cancer_type\",\n" +
+                "\t\t\t\"value\": \"乳腺癌\",\n" +
+                "\t\t\t\"operator\": \"=\",\n" +
+                "\t\t\t\"relationship\": \"\",\n" +
+                "\t\t\t\"childRelationship\": \"or\",\n" +
+                "\t\t\t\"childCohortFilters\": null\n" +
+                "\t\t}, {\n" +
+                "\t\t\t\"name\": \"race\",\n" +
+                "\t\t\t\"value\": \"汉族\",\n" +
+                "\t\t\t\"operator\": \"=\",\n" +
+                "\t\t\t\"relationship\": \"and\",\n" +
+                "\t\t\t\"childRelationship\": \"or\",\n" +
+                "\t\t\t\"childCohortFilters\": null\n" +
+                "\t\t}]\n" +
+                "\t},\n" +
+                "    {\n" +
+                "\t\t\"name\": \"treatment_type\",\n" +
+                "\t\t\"value\": \"放疗\",\n" +
+                "\t\t\"operator\": \"=\",\n" +
+                "\t\t\"relationship\": \"and\",\n" +
+                "\t\t\"childRelationship\": \"and\",\n" +
+                "\t\t\"childCohortFilters\": [{\n" +
+                "\t\t\t\"name\": \"survival_month\",\n" +
+                "\t\t\t\"value\": \"71\",\n" +
+                "\t\t\t\"operator\": \"=\",\n" +
+                "\t\t\t\"relationship\": \"\",\n" +
+                "\t\t\t\"childRelationship\": \"or\",\n" +
+                "\t\t\t\"childCohortFilters\": null\n" +
+                "\t\t}, {\n" +
+                "\t\t\t\"name\": \"age\",\n" +
+                "\t\t\t\"value\": \"76\",\n" +
+                "\t\t\t\"operator\": \"=\",\n" +
+                "\t\t\t\"relationship\": \"or\",\n" +
+                "\t\t\t\"childRelationship\": \"or\",\n" +
+                "\t\t\t\"childCohortFilters\": null\n" +
+                "\t\t}]\n" +
+                "\t}\n" +
+                "    ]\n" +
+                "}";
 
 //        CohortFilterDTO obj = JSONObject.parseObject(s1, CohortFilterDTO.class);
 //        CohortFilterDTO obj = JSONObject.parseObject(s2, CohortFilterDTO.class);
-        CohortFilterDTO obj = JSONObject.parseObject(s3, CohortFilterDTO.class);
+//        CohortFilterDTO obj = JSONObject.parseObject(s3, CohortFilterDTO.class);
+        CohortFilterDTO obj = JSONObject.parseObject(s4, CohortFilterDTO.class);
 
 //        System.out.println(object);
 
@@ -73,7 +126,7 @@ public class FiltersJsonToSql {
     }
 
     public static String getSQL(CohortFilterDTO o, StringBuilder returnSql) {
-        returnSql.append(o.getRelationship() + " ");
+        returnSql.append(" "+ o.getRelationship() + " ");
         returnSql.append(o.getName()).append(o.getOperator()).append("'" + o.getValue() + "'");
         if (o.getChildCohortFilters() != null && o.getChildCohortFilters().size() > 0) {
             returnSql.append(" ").append(o.getChildRelationship()).append(" ");
