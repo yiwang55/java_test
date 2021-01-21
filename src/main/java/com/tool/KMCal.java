@@ -149,8 +149,10 @@ public class KMCal {
                 continue;
             } else {
                 KMValue = 0 == list.get(i).getSurvived() ? "0" : (Double.parseDouble(list.get(i).getSurvived().toString())
-                        / ((Double.parseDouble(list.get(i - 1).getSurvived().toString()) - Double.parseDouble(list.get(i - 1).getCensored().toString())) == 0.0 ? (Double.parseDouble(list.get(i).getCensored().toString())) : (Double.parseDouble(list.get(i - 1).getSurvived().toString()) - Double.parseDouble(list.get(i - 1).getCensored().toString()))))
-                        * Double.parseDouble(KMValue) + "";
+                        / ((Double.parseDouble(list.get(i - 1).getSurvived().toString()) - Double.parseDouble(list.get(i - 1).getCensored().toString())) == 0.0
+                                ? (Double.parseDouble(list.get(i).getSurvived().toString()))
+                                    : (Double.parseDouble(list.get(i - 1).getSurvived().toString()) - Double.parseDouble(list.get(i - 1).getCensored().toString()))))
+                                        * Double.parseDouble(KMValue) + "";
                 KMResultList.add((i + "," + KMValue).split(","));
             }
         }
