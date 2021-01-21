@@ -3,6 +3,8 @@ package com.tool;
 import com.alibaba.fastjson.JSONObject;
 import com.tool.entity.CohortFilterDTO;
 
+import java.util.List;
+
 public class FiltersJsonToSql {
     public static void main(String[] args) {
         String s2 = "{\n" +
@@ -24,7 +26,7 @@ public class FiltersJsonToSql {
                 "\t\"name\": \"a.1\",\n" +
                 "\t\"value\": \"xx\",\n" +
                 "\t\"operator\": \"=\",\n" +
-                "\t\"relationship\": \"and\",\n" +
+                "\t\"relationship\": \"\",\n" +
                 "\t\"childRelationship\": \"and\",\n" +
                 "\t\"childCohortFilters\": null\n" +
                 "}";
@@ -109,11 +111,71 @@ public class FiltersJsonToSql {
                 "\t}\n" +
                 "    ]\n" +
                 "}";
+        String s5="[{\n" +
+                "\t\"name\": \"gender\",\n" +
+                "\t\"value\": \"女\",\n" +
+                "\t\"operator\": \"=\",\n" +
+                "\t\"relationship\": \"\",\n" +
+                "\t\"childRelationship\": \"and\",\n" +
+                "\t\"childCohortFilters\": [{\n" +
+                "\t\t\"name\": \"clinical_stage\",\n" +
+                "\t\t\"value\": \"III\",\n" +
+                "\t\t\"operator\": \"=\",\n" +
+                "\t\t\"relationship\": \"\",\n" +
+                "\t\t\"childRelationship\": \"or\",\n" +
+                "\t\t\"childCohortFilters\": [{\n" +
+                "\t\t\t\"name\": \"cancer_type\",\n" +
+                "\t\t\t\"value\": \"乳腺癌\",\n" +
+                "\t\t\t\"operator\": \"=\",\n" +
+                "\t\t\t\"relationship\": \"\",\n" +
+                "\t\t\t\"childRelationship\": \"or\",\n" +
+                "\t\t\t\"childCohortFilters\": null\n" +
+                "\t\t}, {\n" +
+                "\t\t\t\"name\": \"race\",\n" +
+                "\t\t\t\"value\": \"汉族\",\n" +
+                "\t\t\t\"operator\": \"=\",\n" +
+                "\t\t\t\"relationship\": \"and\",\n" +
+                "\t\t\t\"childRelationship\": \"or\",\n" +
+                "\t\t\t\"childCohortFilters\": null\n" +
+                "\t\t}]\n" +
+                "\t}]\n" +
+                "},\n" +
+                "{\n" +
+                "\t\"name\": \"gender\",\n" +
+                "\t\"value\": \"男\",\n" +
+                "\t\"operator\": \"=\",\n" +
+                "\t\"relationship\": \"\",\n" +
+                "\t\"childRelationship\": \"and\",\n" +
+                "\t\"childCohortFilters\": [{\n" +
+                "\t\t\"name\": \"clinical_stage\",\n" +
+                "\t\t\"value\": \"III\",\n" +
+                "\t\t\"operator\": \"=\",\n" +
+                "\t\t\"relationship\": \"\",\n" +
+                "\t\t\"childRelationship\": \"or\",\n" +
+                "\t\t\"childCohortFilters\": [{\n" +
+                "\t\t\t\"name\": \"cancer_type\",\n" +
+                "\t\t\t\"value\": \"乳腺癌\",\n" +
+                "\t\t\t\"operator\": \"=\",\n" +
+                "\t\t\t\"relationship\": \"\",\n" +
+                "\t\t\t\"childRelationship\": \"or\",\n" +
+                "\t\t\t\"childCohortFilters\": null\n" +
+                "\t\t}, {\n" +
+                "\t\t\t\"name\": \"race\",\n" +
+                "\t\t\t\"value\": \"汉族\",\n" +
+                "\t\t\t\"operator\": \"=\",\n" +
+                "\t\t\t\"relationship\": \"and\",\n" +
+                "\t\t\t\"childRelationship\": \"or\",\n" +
+                "\t\t\t\"childCohortFilters\": null\n" +
+                "\t\t}]\n" +
+                "\t}]\n" +
+                "}\n" +
+                "]";
 
 //        CohortFilterDTO obj = JSONObject.parseObject(s1, CohortFilterDTO.class);
 //        CohortFilterDTO obj = JSONObject.parseObject(s2, CohortFilterDTO.class);
 //        CohortFilterDTO obj = JSONObject.parseObject(s3, CohortFilterDTO.class);
-        CohortFilterDTO obj = JSONObject.parseObject(s4, CohortFilterDTO.class);
+//        CohortFilterDTO obj = JSONObject.parseObject(s4, CohortFilterDTO.class);
+        List<CohortFilterDTO> obj = JSONObject.parseArray(s5, CohortFilterDTO.class);
 
 //        System.out.println(object);
 
@@ -125,16 +187,18 @@ public class FiltersJsonToSql {
         System.out.println(sql2);
     }
 
-    public static String getSQL(CohortFilterDTO o, StringBuilder returnSql) {
-        returnSql.append(" "+ o.getRelationship() + " ");
-        returnSql.append(o.getName()).append(o.getOperator()).append("'" + o.getValue() + "'");
-        if (o.getChildCohortFilters() != null && o.getChildCohortFilters().size() > 0) {
-            returnSql.append(" ").append(o.getChildRelationship()).append(" ");
-            returnSql.append("(");
-            for (CohortFilterDTO f : o.getChildCohortFilters()) {
-                getSQL(f, returnSql);
+    public static String getSQL(List<CohortFilterDTO> obj, StringBuilder returnSql) {
+        if (obj != null && obj.size() > 0) {
+            for (CohortFilterDTO o : obj) {
+                returnSql.append(" " + o.getRelationship() + " ");
+                returnSql.append(o.getName()).append(o.getOperator()).append("'" + o.getValue() + "'");
+                if (o.getChildCohortFilters() != null && o.getChildCohortFilters().size() > 0) {
+                    returnSql.append(" ").append(o.getChildRelationship()).append(" ");
+                    returnSql.append("(");
+                        getSQL(o.getChildCohortFilters(), returnSql);
+                    returnSql.append(")");
+                }
             }
-            returnSql.append(")");
         }
         return returnSql.toString();
     }
